@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>딸기 농장 | 고객 게시판</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="cmdW">
+    <!-- Header -->
+    <header>
+        <h1>딸기 농장 | 밀양 상남면</h1>
+        <nav>
+            <a href="index.html#about">소개</a>
+            <a href="index.html#quality">품질관리</a>
+            <a href="index.html#products">제품</a>
+            <a href="index.html#place">생산지 및 시설</a>
+            <a href="index.html#contact">연락처</a>
+            <a href="index.html#pr">PR</a>
+            <a href="cmdW.html">게시판 </a>
+            <a href="cmdDev.html">관리자 </a>
+        </nav>
+    </header>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <h2>고객 게시판</h2>
+        
+        <!-- Comment Submission Form -->
+        <div class="comment-form">
+            <form id="comment-form">
+                <input type="text" id="name" placeholder="이름" required>
+                <input type="text" id="email" placeholder="연락처 (이메일 또는 전화번호)">
+                <textarea id="comment-text" placeholder="댓글을 남겨주세요" rows="4" required></textarea>
+                <button type="submit">댓글 등록</button>
+            </form>
+        </div>
+
+        <!-- Comments List -->
+        <div class="comments-list" id="comments-list">
+            <!-- Comments will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 딸기 농장 | 밀양 상남면 평촌리. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const commentForm = document.getElementById('comment-form');
+            const commentsList = document.getElementById('comments-list');
+
+            // 기존 댓글 불러오기
+            function loadComments() {
+                const comments = JSON.parse(localStorage.getItem('strawberryFarmComments') || '[]')
+                    .filter(comment => comment.status === 'active') // 활성 상태의 댓글만 표시
+                    .sort((a, b) => new Date(b.date) - new Date(a.date)); // 최신 댓글 먼저 표시
+
+                commentsList.innerHTML = comments.length > 0 
+                    ? comments.map(comment => `
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <strong>${comment.name}</strong>
+                                <span class="comment-date">${new Date(comment.date).toLocaleString()}</span>
+                            </div>
+                            <p>${comment.text}</p>
+                        </div>
+                    `).join('')
+                    : '<p>아직 등록된 댓글이 없습니다.</p>';
+            }
+
+            // 새 댓글 등록
+            commentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const newComment = {
+                    id: Date.now(),
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    text: document.getElementById('comment-text').value,
+                    date: new Date().toISOString(),
+                    status: 'active'
+                };
+
+                // 기존 댓글 불러오기
+                const comments = JSON.parse(localStorage.getItem('strawberryFarmComments') || '[]');
+                
+                // 새 댓글 추가
+                comments.unshift(newComment);
+
+                // 저장
+                localStorage.setItem('strawberryFarmComments', JSON.stringify(comments));
+
+                // 화면 새로고침
+                loadComments();
+
+                // 폼 초기화
+                commentForm.reset();
+
+                // 알림
+                alert('댓글이 성공적으로 등록되었습니다.');
+            });
+
+            // 초기 댓글 로드
+            loadComments();
+
+            // 댓글 변경 감지 (다른 창에서의 변경 사항 동기화)
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'commentsUpdated') {
+                    loadComments();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

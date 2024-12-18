@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>딸기 농장 | 관리자</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .login-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="cmdDev">
+    <!-- Login Container -->
+    <div id="login-container" class="login-container">
+        <div class="login-box">
+            <h2>로그인</h2>
+            <label for="user-id">ID</label>
+            <input type="text" id="user-id" placeholder="ID를 입력하세요">
+            <label for="user-password">Password</label>
+            <input type="password" id="user-password" placeholder="비밀번호를 입력하세요">
+            <button onclick="validateLogin()">로그인</button>
+            <p id="error-message" style="color: red; display: none;">ID 또는 비밀번호가 잘못되었습니다.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="hidden">
+        <!-- Header -->
+        <header>
+            <h1>딸기 농장 | 밀양 상남면</h1>
+            <nav>
+                <a href="index.html#about">소개</a>
+                <a href="index.html#quality">품질관리</a>
+                <a href="index.html#products">제품</a>
+                <a href="index.html#place">생산지 및 시설</a>
+                <a href="index.html#contact">연락처</a>
+                <a href="index.html#pr">PR</a>
+                <a href="cmdW.html">게시판</a>
+                <a href="cmdDev.html">관리자</a>
+            </nav>
+        </header>
+
+        <div class="container">
+            <div class="comment-management">
+                <div>
+                    <h2>댓글 목록</h2>
+                    <div id="comments-list" class="comments-list"></div>
+                </div>
+            </div>
+
+            <div class="dev-tools">
+                <h2>데이터 관리</h2>
+                <div>
+                    <button onclick="clearComments()">모든 댓글 삭제</button>
+                    <button onclick="exportComments()">댓글 내보내기</button>
+                    <input type="file" id="import-file" accept=".json">
+                    <button onclick="importComments()">댓글 가져오기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const validID = "손희태";
+        const validPassword = "0123";
+
+        function validateLogin() {
+            const userID = document.getElementById("user-id").value;
+            const userPassword = document.getElementById("user-password").value;
+            const errorMessage = document.getElementById("error-message");
+
+            if (userID === validID && userPassword === validPassword) {
+                document.getElementById("login-container").style.display = "none";
+                document.getElementById("main-content").classList.remove("hidden");
+            } else {
+                errorMessage.style.display = "block";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("login-container").style.display = "flex";
+        });
+
+        // 기존 스크립트 유지
+        class CommentManager {
+            constructor() {
+                this.comments = JSON.parse(localStorage.getItem('strawberryFarmComments') || '[]');
+            }
+
+            deleteComment(id) {
+                this.comments = this.comments.filter(comment => comment.id !== id);
+                this.saveComments();
+                this.renderComments();
+            }
+
+            toggleCommentStatus(id) {
+                const comment = this.comments.find(c => c.id === id);
+                if (comment) {
+                    comment.status = comment.status === 'active' ? 'hidden' : 'active';
+                    this.saveComments();
+                    this.renderComments();
+                }
+            }
+
+            saveComments() {
+                localStorage.setItem('strawberryFarmComments', JSON.stringify(this.comments));
+                localStorage.setItem('commentsUpdated', 'true');
+            }
+
+            renderComments() {
+                const commentsList = document.getElementById('comments-list');
+                commentsList.innerHTML = this.comments.map(comment => `
+                    <div class="comment-item ${comment.status === 'hidden' ? 'comment-hidden' : ''}" data-id="${comment.id}">
+                        <div>
+                            <strong>${comment.name}</strong>
+                            <p>${comment.email}</p>
+                            <p>${comment.text}</p>
+                            <small>${new Date(comment.date).toLocaleString()}</small>
+                        </div>
+                        <div class="comment-actions">
+                            <button onclick="commentManager.toggleCommentStatus(${comment.id})">
+                                ${comment.status === 'active' ? '숨기기' : '보이기'}
+                            </button>
+                            <button onclick="commentManager.deleteComment(${comment.id})">삭제</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        const commentManager = new CommentManager();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            commentManager.renderComments();
+        });
+
+        function clearComments() {
+            if(confirm('정말로 모든 댓글을 삭제하시겠습니까?')) {
+                localStorage.removeItem('strawberryFarmComments');
+                commentManager.comments = [];
+                commentManager.renderComments();
+                localStorage.setItem('commentsUpdated', 'true');
+            }
+        }
+
+        function exportComments() {
+            const comments = JSON.parse(localStorage.getItem('strawberryFarmComments') || '[]');
+            const blob = new Blob([JSON.stringify(comments, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'strawberry_farm_comments_' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importComments() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedComments = JSON.parse(e.target.result);
+                        localStorage.setItem('strawberryFarmComments', JSON.stringify(importedComments));
+                        commentManager.comments = importedComments;
+                        commentManager.renderComments();
+                        alert('댓글이 성공적으로 가져와졌습니다.');
+                        localStorage.setItem('commentsUpdated', 'true');
+                    } catch (error) {
+                        alert('댓글 파일을 읽는 중 오류가 발생했습니다.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+    </script>
+</body>
+</html>
