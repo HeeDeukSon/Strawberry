@@ -182,6 +182,21 @@ img {
     margin-bottom: 1rem;
 }
 
+/* control over the map's layout */
+.map-wrapper {
+    width: 100%; /* Allow the map to span the full width of its container */
+    max-width: 1000px; /* Increase the maximum width to make the map larger */
+    margin: 0 auto; /* Center the map horizontally */
+    padding: 10px; /* Optional: Add padding around the map */
+}
+
+.map-wrapper iframe {
+    width: 100%; /* Make the map responsive */
+    height: auto; /* Maintain the aspect ratio */
+    aspect-ratio: 4 / 3; /* Set a larger aspect ratio for more height */
+    border: 0; /* Optional: Remove border */
+}
+
 /* Steps Section (Unchanged) */
 .steps {
     display: flex;
@@ -203,6 +218,16 @@ img {
 }
 footer {
     margin-top: 2rem;
+}
+
+.contact-detail {
+    font-weight: bold; /* 굵게 표시 */
+    color: blue; /* 파란색 */
+    text-decoration: none; /* 링크 밑줄 제거 (선택 사항) */
+}
+
+.contact-detail:hover {
+    text-decoration: underline; /* 마우스를 올렸을 때 밑줄 표시 */
 }
 
 /* Comment Input */
@@ -337,5 +362,15 @@ footer {
     .container {
         max-width: 90%; /* Allow more flexibility on smaller devices */
         padding: 5px; /* Reduce padding for smaller screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .map-wrapper {
+        padding: 5px; /* Reduce padding on smaller screens */
+    }
+
+    .map-wrapper iframe {
+        max-width: 100%; /* Ensure it fits smaller devices */
     }
 }
