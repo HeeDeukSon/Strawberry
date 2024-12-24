@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("comment-form");
     const commentList = document.getElementById("comment-list");
     const video = document.getElementById("berryVideo");
+    const header = document.querySelector("header");
+    let lastScrollTop = 0; // Track the last scroll position
 
     // Video interaction logic
     if (video) {
@@ -17,6 +19,24 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         console.error("Video element not found.");
     }
+
+    // Header hide/show on scroll logic
+    if (header) {
+        window.addEventListener("scroll", () => {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (currentScroll > lastScrollTop) {
+                // Scrolling down - hide header
+                header.style.transform = "translateY(-100%)";
+            } else {
+                // Scrolling up - show header
+                header.style.transform = "translateY(0)";
+            }
+
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // Prevent negative scrolling
+        });
+    }
+
     // Horizontal scrolling functionality for the navigation bar
     const nav = document.querySelector("header nav");
     const leftButton = document.querySelector(".nav-scroll.left");
@@ -80,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-
     // Load comments from local storage
     const loadComments = () => JSON.parse(localStorage.getItem("comments")) || [];
 
@@ -140,9 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const text = document.getElementById("comment").value.trim();
 
             // Validate contact info
-            const contactIsValid = 
-                contact === "" || 
-                /^[^@]+@[^@]+\.[^@]+$/.test(contact) || 
+            const contactIsValid =
+                contact === "" ||
+                /^[^@]+@[^@]+\.[^@]+$/.test(contact) ||
                 /^\d{3}-\d{3,4}-\d{4}$/.test(contact);
 
             if (!name || !text) {
