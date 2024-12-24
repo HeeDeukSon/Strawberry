@@ -29,20 +29,23 @@ header {
     position: relative;
     display: flex;
     align-items: center;
-    overflow: hidden;
+    width: 100%; /* Adjust to full width */
+    max-width: 210mm; /* Limit to A4 size */
+    margin: 0 auto; /* Center within the page */
+    overflow: hidden; /* Hide any overflowing content */
 }
 
 header nav {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-start; /* Align menu items to the left */
     gap: 1rem;
     white-space: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none; /* Hide default scrollbar */
+    overflow-x: auto; /* Allow horizontal scrolling */
+    scrollbar-width: none; /* Hide the scrollbar */
 }
 
 header nav::-webkit-scrollbar {
-    display: none; /* Hide default scrollbar */
+    display: none; /* Hide scrollbar for webkit browsers */
 }
 
 header nav a {
@@ -60,6 +63,10 @@ header nav a i {
     font-size: 1.2rem;
 }
 
+header nav a:first-child {
+    margin-left: 0; /* Ensure no extra space before "소개" */
+}
+
 header nav a:hover {
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 5px;
@@ -67,7 +74,7 @@ header nav a:hover {
 
 .nav-scroll {
     position: absolute;
-    top: 50%;
+    top: 50%; /* Center vertically */
     transform: translateY(-50%);
     background-color: rgba(255, 255, 255, 0.3);
     border: none;
@@ -79,11 +86,11 @@ header nav a:hover {
 }
 
 .nav-scroll.left {
-    left: 5px;
+    left: 0px;
 }
 
 .nav-scroll.right {
-    right: 5px;
+    right: 0px;
 }
 
 .nav-scroll i {

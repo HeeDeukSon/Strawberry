@@ -17,23 +17,69 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         console.error("Video element not found.");
     }
-
     // Horizontal scrolling functionality for the navigation bar
     const nav = document.querySelector("header nav");
     const leftButton = document.querySelector(".nav-scroll.left");
     const rightButton = document.querySelector(".nav-scroll.right");
 
     if (nav && leftButton && rightButton) {
+        // Ensure the "소개" menu is visible on page load
+        const firstMenuItem = nav.querySelector("a:first-child");
+        if (firstMenuItem) {
+            nav.scrollLeft = 0; // Set the scroll position to the start
+        }
+
+        // Function to toggle button visibility
+        const toggleScrollButtons = () => {
+            const maxScrollLeft = nav.scrollWidth - nav.clientWidth;
+
+            // Show/hide left button
+            if (nav.scrollLeft > 0) {
+                leftButton.style.display = "block";
+            } else {
+                leftButton.style.display = "none";
+            }
+
+            // Show/hide right button
+            if (nav.scrollLeft < maxScrollLeft) {
+                rightButton.style.display = "block";
+            } else {
+                rightButton.style.display = "none";
+            }
+        };
+
+        // Trigger the toggle on page load
+        toggleScrollButtons();
+
+        // Scroll left button logic
         leftButton.addEventListener("click", () => {
-            nav.scrollBy({ left: -100, behavior: "smooth" });
+            if (firstMenuItem) {
+                const menuRect = firstMenuItem.getBoundingClientRect();
+                const navRect = nav.getBoundingClientRect();
+
+                // Scroll to the beginning if "소개" is not fully visible
+                if (menuRect.left < navRect.left || menuRect.right > navRect.right) {
+                    nav.scrollTo({ left: 0, behavior: "smooth" });
+                }
+            }
         });
 
+        // Scroll right button logic
         rightButton.addEventListener("click", () => {
             nav.scrollBy({ left: 100, behavior: "smooth" });
         });
-    } else {
-        console.error("Navigation bar or scroll buttons not found.");
+
+        // Add scroll event listener to update button visibility
+        nav.addEventListener("scroll", toggleScrollButtons);
+
+        // Prevent overscrolling
+        nav.addEventListener("scroll", () => {
+            const maxScrollLeft = nav.scrollWidth - nav.clientWidth;
+            if (nav.scrollLeft < 0) nav.scrollLeft = 0;
+            if (nav.scrollLeft > maxScrollLeft) nav.scrollLeft = maxScrollLeft;
+        });
     }
+
 
     // Load comments from local storage
     const loadComments = () => JSON.parse(localStorage.getItem("comments")) || [];
