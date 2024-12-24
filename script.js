@@ -18,6 +18,23 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Video element not found.");
     }
 
+    // Horizontal scrolling functionality for the navigation bar
+    const nav = document.querySelector("header nav");
+    const leftButton = document.querySelector(".nav-scroll.left");
+    const rightButton = document.querySelector(".nav-scroll.right");
+
+    if (nav && leftButton && rightButton) {
+        leftButton.addEventListener("click", () => {
+            nav.scrollBy({ left: -100, behavior: "smooth" });
+        });
+
+        rightButton.addEventListener("click", () => {
+            nav.scrollBy({ left: 100, behavior: "smooth" });
+        });
+    } else {
+        console.error("Navigation bar or scroll buttons not found.");
+    }
+
     // Load comments from local storage
     const loadComments = () => JSON.parse(localStorage.getItem("comments")) || [];
 
@@ -79,8 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
             // Validate contact info
             const contactIsValid = 
                 contact === "" || 
-                /^[^@]+@[^@]+\\.[^@]+$/.test(contact) || 
-                /^\\d{3}-\\d{3,4}-\\d{4}$/.test(contact);
+                /^[^@]+@[^@]+\.[^@]+$/.test(contact) || 
+                /^\d{3}-\d{3,4}-\d{4}$/.test(contact);
 
             if (!name || !text) {
                 alert("이름과 댓글을 모두 입력하세요.");

@@ -5,23 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>딸기 농장 | 밀양 상남면 평촌리</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Add Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="script.js" defer></script>
 </head>
 <body>
     <!-- Full-width Header -->
     <header>
         <h1>딸기 농장 | 밀양 상남면</h1>
-        <nav>
-            <a href="#about">소개</a>
-            <a href="#quality">품질관리</a>
-            <a href="#products">제품</a>
-            <a href="#place">생산지 및 시설</a>
-            <a href="#contact">연락처</a>
-            <a href="#pr">PR</a>
-            <a href="cmdW.html">게시판</a>
-            <a href="cmdDev.html">관리자</a>
-        </nav>
+        <div class="nav-wrapper">
+            <button class="nav-scroll left"><i class="fas fa-chevron-left"></i></button>
+            <nav>
+                <a href="#about"><i class="fas fa-info-circle"></i> 소개</a>
+                <a href="#quality"><i class="fas fa-check-circle"></i> 품질관리</a>
+                <a href="#products"> <img src="img/berryicon.jpg" alt="Strawberry" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 0.5rem;"> 제품 </a>
+                <a href="#place"><i class="fas fa-map-marker-alt"></i> 생산지 및 시설</a>
+                <a href="#contact"><i class="fas fa-phone"></i> 연락처</a>
+                <a href="#pr"><i class="fas fa-handshake"></i> PR</a>
+                <a href="cmdW.html"><i class="fas fa-comments"></i> 게시판</a>
+                <a href="cmdDev.html"><i class="fas fa-cogs"></i> 관리자</a>
+            </nav>
+            <button class="nav-scroll right"><i class="fas fa-chevron-right"></i></button>
+        </div>
     </header>
+    
 
     <!-- A4-width Content -->
     <div class="container">
@@ -75,7 +82,7 @@
         <section id="products">
             <h2><a href="#" class="back-to-top">밀양 딸기</a></h2>
             <div class="products">
-                <img src="img/berry10.jpg" alt="Milyang Strawberry">
+                <img src="img/berry10.jpg" alt="Milyang Strawberry" class="larger-image">
                 <h3>현재 자라는 모습</h3>
                 <p>건강한 토양에서 병충해 없이 잘 자라고 있습니다.</p>
                 <img src="img/berry01.jpg" alt="Milyang Strawberry">
