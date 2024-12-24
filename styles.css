@@ -332,3 +332,10 @@ footer {
     color: #666;
     font-size: 0.8em;
 }
+
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%; /* Allow more flexibility on smaller devices */
+        padding: 5px; /* Reduce padding for smaller screens */
+    }
+}
